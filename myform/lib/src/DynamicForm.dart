@@ -5,6 +5,7 @@ import 'package:myform/src/widgets/InformationPanel.dart';
 class DynamicForm extends StatefulWidget {
   DynamicForm({
     Key? key,
+    required this.buttonsColor,
     required this.borderColor,
     required this.borderRadius,
     required this.shadowColor,
@@ -17,8 +18,13 @@ class DynamicForm extends StatefulWidget {
     required this.selectorText,
     required this.buttonSelectOptionsTypeQuestionText,
     required this.buttonSelectFreeTypeQuestionText,
+    required this.optionsTypeQuestionTextLabelText,
+    required this.optionsTypeQuestionTextHintText,
+    required this.optionTypeQuestionOptionLabelText,
+    required this.optionTypeQuestionOptionHintText,
   }) : super(key: key);
 
+  final Color buttonsColor;
   final Color borderColor;
   final double borderRadius;
   final Color shadowColor;
@@ -31,6 +37,10 @@ class DynamicForm extends StatefulWidget {
   final String selectorText;
   final String buttonSelectOptionsTypeQuestionText;
   final String buttonSelectFreeTypeQuestionText;
+  final String optionsTypeQuestionTextLabelText;
+  final String optionsTypeQuestionTextHintText;
+  final String optionTypeQuestionOptionLabelText;
+  final String optionTypeQuestionOptionHintText;
 
   @override
   _DynamicFormState createState() => _DynamicFormState();
@@ -41,9 +51,16 @@ class _DynamicFormState extends State<DynamicForm> {
 
   String title = "";
   String description = "";
-  List<Question> preguntas = [];
-  List<Widget> widgetsPreguntas = [];
+  List<Question> questions = [];
+  List<Widget> questionsWidgets = [];
   String selectedQuestionType = "selector";
+
+  var _optionsTypeQuestionFormController = TextEditingController();
+  var _optionsTypeQuestionFormOptionsController = TextEditingController();
+  String optionTypeQuestionFormText = "";
+  String optionTypeQuestionFormOptionText = "";
+  List<Widget> optionsTypeQuestionOptionsWidgets = [];
+  List<String> optionsTypeQuestionOptionsTexts = [];
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +79,14 @@ class _DynamicFormState extends State<DynamicForm> {
           Container(
             color: Colors.white,
             child: Column(
-              children: widgetsPreguntas,
+              children: questionsWidgets,
             ),
           ),
           Divider(
             color: Colors.transparent,
           ),
           if (this.selectedQuestionType == "selector") questionTypeSelector(),
-          if (this.selectedQuestionType == "options") optionTypeQuestionForm(),
+          if (this.selectedQuestionType == "options") optionsTypeQuestionForm(),
           // if (this.selectedQuestionType == "free")
           // formularioPreguntaLibre(),
         ]));
@@ -192,71 +209,255 @@ class _DynamicFormState extends State<DynamicForm> {
   }
 
   // TODO:
-  // Widget optionTypeQuestionForm() {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //         border: Border.all(
-  //           color: widget.borderColor,
-  //         ),
-  //         borderRadius: BorderRadius.all(Radius.circular(20)),
-  //         boxShadow: [
-  //           BoxShadow(
-  //             color: widget.shadowColor.withOpacity(0.50),
-  //             spreadRadius: 1,
-  //             blurRadius: 9,
-  //             offset: Offset(0, 4), // changes position of shadow
-  //           ),
-  //         ]),
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(20.0),
-  //       child: Column(
-  //         children: [
-  //           textoFormularioPreguntaSeleccion(),
-  //           Container(
-  //             color: Colors.white,
-  //             child: Column(
-  //               children: widgetsOpcionesPreguntaSeleccion,
-  //             ),
-  //           ),
-  //           if (widgetsOpcionesPreguntaSeleccion.length <= 3)
-  //             opcionFormularioPreguntaSeleccion(),
-  //           Padding(
-  //             padding: const EdgeInsets.only(top: 25.0),
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               children: [
-  //                 botonBorrarPreguntaSeleccion(),
-  //                 botonAniadirPreguntaSeleccion(),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget optionsTypeQuestionForm() {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: widget.borderColor,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: widget.shadowColor.withOpacity(0.50),
+              spreadRadius: 1,
+              blurRadius: 9,
+              offset: Offset(0, 4), // changes position of shadow
+            ),
+          ]),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            optionsTypeQuestionFormText(),
+            Container(
+              color: Colors.white,
+              child: Column(
+                children: optionsTypeQuestionOptionsWidgets,
+              ),
+            ),
+            if (optionsTypeQuestionOptionsWidgets.length <= 3)
+              optionsTypeQuestionFormOption(),
+            Padding(
+              padding: const EdgeInsets.only(top: 25.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  deleteOptionsTypeQuestionButton(),
+                  addOptionsTypeQuestionButton(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   // TODO:
-  // Widget textoFormularioPreguntaSeleccion() {
-  //   return TextFormField(
-  //     controller: _controladorPreguntaSeleccion,
-  //     keyboardType: TextInputType.multiline,
-  //     maxLines: null,
-  //     decoration: InputDecoration(
-  //       border: UnderlineInputBorder(),
-  //       labelText: 'Pregunta',
-  //       hintText: 'Escribe una pregunta',
-  //       icon: Icon(Icons.question_answer),
-  //     ),
-  //     onChanged: (value) => setState(() {
-  //       textoPreguntaSeleccion = value;
-  //     }),
-  //     validator: (value) {
-  //       if (value!.length == 0 || value.isEmpty) {
-  //         return 'Por favor, introduce una pregunta.';
-  //       }
-  //       return null;
-  //     },
-  //   );
-  // }
+  Widget optionsTypeQuestionFormText() {
+    return TextFormField(
+      controller: _optionsTypeQuestionFormController,
+      keyboardType: TextInputType.multiline,
+      maxLines: null,
+      decoration: InputDecoration(
+        border: UnderlineInputBorder(),
+        labelText: 'Pregunta',
+        hintText: 'Escribe una pregunta',
+        icon: Icon(Icons.question_answer),
+      ),
+      onChanged: (value) => setState(() {
+        optionTypeQuestionFormText = value;
+      }),
+      validator: (value) {
+        if (value!.length == 0 || value.isEmpty) {
+          return 'Por favor, introduce una pregunta.';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget optionsTypeQuestionFormOption() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: _optionsTypeQuestionFormOptionsController,
+        keyboardType: TextInputType.text,
+        decoration: InputDecoration(
+          border: UnderlineInputBorder(),
+          labelText: 'Opción',
+          hintText: 'Opción',
+          icon: null,
+          suffixIcon: IconButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                if (optionsTypeQuestionOptionsWidgets.length <= 3) {
+                  this.optionsTypeQuestionOptionsWidgets.add(
+                      optionTypeQuestionOption(
+                          optionTypeQuestionFormOptionText));
+                  setState(() {
+                    this
+                        .optionsTypeQuestionOptionsTexts
+                        .add(optionTypeQuestionFormOptionText);
+                    this.optionsTypeQuestionOptionsWidgets =
+                        optionsTypeQuestionOptionsWidgets;
+                    _optionsTypeQuestionFormOptionsController.clear();
+                  });
+                }
+              }
+            },
+            icon: Icon(
+              Icons.add,
+              color: widget.buttonsColor,
+            ),
+          ),
+        ),
+        onChanged: (value) => setState(() {
+          optionTypeQuestionFormOptionText = value;
+        }),
+        validator: (value) {
+          if (optionsTypeQuestionOptionsWidgets.length <= 1 &&
+              (value!.length == 0 || value.isEmpty)) {
+            return 'Por favor, introduce una opción.';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget addOptionsTypeQuestionButton() {
+    return ElevatedButton(
+      onPressed: () {
+        if (formKey.currentState!.validate()) {
+          if (optionsTypeQuestionOptionsWidgets.length > 1) {
+            addOptionsTypeQuestion();
+            _optionsTypeQuestionFormOptionsController.clear();
+            _optionsTypeQuestionFormController.clear();
+          }
+        }
+      },
+      child: Icon(
+        Icons.done,
+        color: optionsTypeQuestionOptionsWidgets.length <= 1
+            ? Colors.grey.shade50
+            : Colors.blue[50],
+      ),
+      style: ElevatedButton.styleFrom(
+        shape: CircleBorder(),
+        padding: EdgeInsets.all(10),
+        primary: optionsTypeQuestionOptionsWidgets.length <= 1
+            ? Colors.grey
+            : widget.buttonsColor, // <-- Button color
+        onPrimary: Colors.blueAccent, // <-- Splash color
+      ),
+    );
+  }
+
+  Widget deleteOptionsTypeQuestionButton() {
+    return ElevatedButton(
+      onPressed: () {
+        deleteOptionsTypeQuestion();
+      },
+      child: Icon(
+        Icons.clear,
+        color: Colors.red[50],
+      ),
+      style: ElevatedButton.styleFrom(
+        shape: CircleBorder(),
+        padding: EdgeInsets.all(10),
+        primary: Colors.red, // <-- Button color
+        onPrimary: Colors.redAccent, // <-- Splash color
+      ),
+    );
+  }
+
+// TODO:
+  Widget optionsTypeQuestion(String text, List<Widget> options) {
+    return Container(
+      margin: EdgeInsets.only(top: 15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+          color: widget.borderColor,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            optionsTypeQuestionText(text),
+            optionsTypeQuestionOptions(options)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget optionsTypeQuestionText(String text) {
+    return TextFormField(
+      enabled: false,
+      initialValue: text,
+      keyboardType: TextInputType.multiline,
+      maxLines: null,
+      decoration: InputDecoration(
+        border: UnderlineInputBorder(),
+        labelText: widget.optionsTypeQuestionTextLabelText,
+        hintText: widget.optionsTypeQuestionTextHintText,
+        icon: Icon(Icons.question_answer),
+      ),
+    );
+  }
+
+  Widget optionsTypeQuestionOptions(List<Widget> options) {
+    return Column(children: options);
+  }
+
+  Widget optionTypeQuestionOption(String text) {
+    return TextFormField(
+      enabled: false,
+      initialValue: text,
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        border: UnderlineInputBorder(),
+        labelText: widget.optionTypeQuestionOptionLabelText,
+        hintText: widget.optionTypeQuestionOptionHintText,
+        icon: null,
+      ),
+    );
+  }
+
+  // Logic //
+  // TODO:
+  void addOptionsTypeQuestion() {
+    this.questionsWidgets.add(optionsTypeQuestion(
+        optionTypeQuestionFormText, optionsTypeQuestionOptionsWidgets));
+
+    Question question = new Question(
+        type: 1,
+        text: optionTypeQuestionFormOptionText,
+        answerType: '',
+        options: optionsTypeQuestionOptionsTexts);
+    this.questions.add(question);
+
+    setState(() {
+      this.questionsWidgets = questionsWidgets;
+      optionsTypeQuestionOptionsWidgets = [];
+      optionsTypeQuestionOptionsTexts = [];
+      selectedQuestionType = "selector";
+    });
+  }
+
+  // TODO:
+  void deleteOptionsTypeQuestion() {
+    _optionsTypeQuestionFormOptionsController.clear();
+    _optionsTypeQuestionFormController.clear();
+    setState(() {
+      optionsTypeQuestionOptionsWidgets = [];
+      optionsTypeQuestionOptionsTexts = [];
+      selectedQuestionType = "selector";
+    });
+  }
 }
