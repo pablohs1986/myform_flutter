@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "myform",
+            "cwd": "myform",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "myform (profile mode)",
+            "cwd": "myform",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "myform_example",
+            "cwd": "myform_example",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "myform_example (profile mode)",
+            "cwd": "myform_example",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        }
+    ]
+}

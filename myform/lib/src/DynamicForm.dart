@@ -48,6 +48,10 @@ class DynamicForm extends StatefulWidget {
 
 class _DynamicFormState extends State<DynamicForm> {
   final formKey = GlobalKey<FormState>();
+  FocusNode selectorNode = new FocusNode();
+  FocusNode questionNode = new FocusNode();
+  FocusNode addQuestionNode = new FocusNode();
+  // TODO: trabajar con FocusNode() para enfocar al siguiente textfield(al titulo de la pregunta, ya sea libre o tipo opcion)
 
   String title = "";
   String description = "";
@@ -77,7 +81,7 @@ class _DynamicFormState extends State<DynamicForm> {
             color: Colors.transparent,
           ),
           Container(
-            color: Colors.white,
+            color: Colors.transparent,
             child: Column(
               children: questionsWidgets,
             ),
@@ -180,10 +184,12 @@ class _DynamicFormState extends State<DynamicForm> {
 
   Widget buttonSelectOptionsTypeQuestion() {
     return ElevatedButton(
+        focusNode: selectorNode,
         onPressed: () {
           if (formKey.currentState!.validate()) {
             setState(() {
               selectedQuestionType = "options";
+              FocusScope.of(context).requestFocus(questionNode);
             });
           }
         },
@@ -257,6 +263,7 @@ class _DynamicFormState extends State<DynamicForm> {
   // TODO:
   Widget optionsTypeQuestionFormText() {
     return TextFormField(
+      focusNode: questionNode,
       controller: _optionsTypeQuestionFormController,
       keyboardType: TextInputType.multiline,
       maxLines: null,
@@ -294,7 +301,7 @@ class _DynamicFormState extends State<DynamicForm> {
               if (formKey.currentState!.validate()) {
                 if (optionsTypeQuestionOptionsWidgets.length <= 3) {
                   this.optionsTypeQuestionOptionsWidgets.add(
-                      optionTypeQuestionOption(
+                      optionsTypeQuestionOption(
                           optionTypeQuestionFormOptionText));
                   setState(() {
                     this
@@ -304,6 +311,9 @@ class _DynamicFormState extends State<DynamicForm> {
                         optionsTypeQuestionOptionsWidgets;
                     _optionsTypeQuestionFormOptionsController.clear();
                   });
+                }
+                if (optionsTypeQuestionOptionsWidgets.length == 4) {
+                  FocusScope.of(context).requestFocus(addQuestionNode);
                 }
               }
             },
@@ -329,6 +339,7 @@ class _DynamicFormState extends State<DynamicForm> {
 
   Widget addOptionsTypeQuestionButton() {
     return ElevatedButton(
+      focusNode: addQuestionNode,
       onPressed: () {
         if (formKey.currentState!.validate()) {
           if (optionsTypeQuestionOptionsWidgets.length > 1) {
@@ -415,7 +426,7 @@ class _DynamicFormState extends State<DynamicForm> {
     return Column(children: options);
   }
 
-  Widget optionTypeQuestionOption(String text) {
+  Widget optionsTypeQuestionOption(String text) {
     return TextFormField(
       enabled: false,
       initialValue: text,
@@ -447,6 +458,7 @@ class _DynamicFormState extends State<DynamicForm> {
       optionsTypeQuestionOptionsWidgets = [];
       optionsTypeQuestionOptionsTexts = [];
       selectedQuestionType = "selector";
+      FocusScope.of(context).requestFocus(selectorNode);
     });
   }
 

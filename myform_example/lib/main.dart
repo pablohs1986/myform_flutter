@@ -43,32 +43,38 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final bottom = MediaQuery.of(context).viewInsets.bottom;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false, //
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-        child: DynamicForm(
-          buttonsColor: Colors.purple,
-          borderColor: Colors.purple,
-          borderRadius: 7.5,
-          shadowColor: Colors.grey,
-          titleHintText: 'Title',
-          titleLableText: 'Title',
-          titleValidationError: 'Please, enter a title',
-          descriptionHintText: 'Description',
-          descriptionLableText: 'Description',
-          descriptionValidationError: 'Please, enter a description',
-          buttonSelectFreeTypeQuestionText: 'Free',
-          buttonSelectOptionsTypeQuestionText: 'Options',
-          selectorText: 'Select a question type',
-          optionsTypeQuestionTextHintText: 'Question',
-          optionsTypeQuestionTextLabelText: 'Question',
-          optionTypeQuestionOptionHintText: '',
-          optionTypeQuestionOptionLabelText: 'Option',
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: SingleChildScrollView(
+          reverse: true,
+          child: Padding(
+            padding:
+                const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 15.0),
+            child: DynamicForm(
+              buttonsColor: Colors.purple,
+              borderColor: Colors.purple,
+              borderRadius: 7.5,
+              shadowColor: Colors.grey,
+              titleHintText: 'Title',
+              titleLableText: 'Title',
+              titleValidationError: 'Please, enter a title',
+              descriptionHintText: 'Description',
+              descriptionLableText: 'Description',
+              descriptionValidationError: 'Please, enter a description',
+              buttonSelectFreeTypeQuestionText: 'Free',
+              buttonSelectOptionsTypeQuestionText: 'Options',
+              selectorText: 'Select a question type',
+              optionsTypeQuestionTextHintText: 'Question',
+              optionsTypeQuestionTextLabelText: 'Question',
+              optionTypeQuestionOptionHintText: '',
+              optionTypeQuestionOptionLabelText: 'Option',
+            ),
+          ),
         ),
       ),
     );
